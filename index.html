@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Game - Life in Colour</title>
     <style>
+        @font-face {
+            font-family: 'LC_ORCHARD_BOLD';
+            src: url('fonts/LC-ORCHARD-BOLD.otf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-image: url('bg.jpg'); /* Thêm hình nền */
@@ -287,7 +293,7 @@
 
         // Kiểm tra nếu đã chơi quiz trước đó
         function checkPreviousResult() {
-            const savedResult = localStorage.getItem('quizResult');
+            // const savedResult = localStorage.getItem('quizResult');
             if (savedResult) {
                 const { language, imageUrl } = JSON.parse(savedResult);
 
