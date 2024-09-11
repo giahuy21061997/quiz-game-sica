@@ -38,7 +38,7 @@
         }
         .question {
             font-size: 20px;
-            margin-bottom: 10px;
+            margin-top: 80px;
             font-weight: bold;
             color: #000;
         }
@@ -47,10 +47,11 @@
             display: block;
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-top: 20px; /* Điều chỉnh khoảng cách giữa câu hỏi và các nút */
+            margin-bottom: 20px;
             border: none;
             border-radius: 15px;
-            font-size: 20px;
+            font-size: 16px;
             color: white;
             font-weight: bold; /* Chữ in đậm */
             font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif; /* Áp dụng font đã tải */
@@ -60,13 +61,26 @@
         .option-b { background-color: #fe5353; }
         .option-c { background-color: #fdba4e; }
 
+        .language-title {
+            margin-top: 50px; /* Tạo khoảng cách 20px giữa phần tử phía trên và dòng chữ */
+            font-weight: bold;
+            color: #ff6cfd; /* Đặt màu hồng theo yêu cầu */
+            font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif; /* Áp dụng font đã tải */
+            font-size: 30px;
+        }
+        .language-title_en {
+            font-weight: bold;
+            color: #ff6cfd; /* Đặt màu hồng theo yêu cầu */
+            font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif; /* Áp dụng font đã tải */
+            font-size: 25px;
+        }
         /* Màn hình chọn ngôn ngữ */
         .language-selection button {
             display: block;
             width: 100%;
             padding: 15px;
             margin: 10px 0;
-            font-size: 35px;
+            font-size: 30px;
             color: white;
             border: none;
             border-radius: 20px;
@@ -143,7 +157,8 @@
 <body>
     <!-- Màn hình chọn ngôn ngữ -->
     <div class="container" id="language-container">
-        <h2>NGÔN NGỮ BẠN MUỐN SỬ DỤNG?<br>What is your language?</h2>
+        <h2 class="language-title">NGÔN NGỮ BẠN<br> MUỐN SỬ DỤNG?</h2>
+        <h3 class="language-title_en">What is your language?</h3>
         <div class="language-selection">
             <button class="btn-vietnamese" onclick="setLanguage('vi')">Tiếng Việt</button>
             <button class="btn-english" onclick="setLanguage('en')">English</button>
@@ -355,7 +370,7 @@
 
         // Kiểm tra nếu đã chơi quiz trước đó
         function checkPreviousResult() {
-            const savedResult = localStorage.getItem('quizResult');
+            // const savedResult = localStorage.getItem('quizResult');
             if (savedResult) {
                 const { language, imageUrl } = JSON.parse(savedResult);
 
@@ -374,7 +389,7 @@
         }
 
         // Kiểm tra xem đã có kết quả trước đó hay chưa khi mở trang
-        checkPreviousResult();
+        //checkPreviousResult();
     </script>
 </body>
 </html>
