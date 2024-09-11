@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game - Life in Colour</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('bg.jpg'); /* Thêm hình nền */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: transparent;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: none;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            color: white;
+        }
+
+        .option-a { background-color: #4CAF50; }
+        .option-b { background-color: #FF5733; }
+        .option-c { background-color: #FFC300; }
+
+        /* Màn hình chọn ngôn ngữ */
+        .language-selection button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .btn-vietnamese { background-color: #28a745; }
+        .btn-english { background-color: #ffc107; }
+
+        /* CSS cho hình ảnh kết quả full màn hình */
+        .full-screen-result {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .full-screen-result button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none; /* Ẩn nút chơi lại */
+        }
+    </style>
+</head>
+<body>
+    <!-- Màn hình chọn ngôn ngữ -->
+    <div class="container" id="language-container">
+        <h1>Life in Colour</h1>
+        <h2>NGÔN NGỮ BẠN MUỐN SỬ DỤNG?<br>What is your language?</h2>
+        <div class="language-selection">
+            <button class="btn-vietnamese" onclick="setLanguage('vi')">Tiếng Việt</button>
+            <button class="btn-english" onclick="setLanguage('en')">English</button>
+        </div>
+    </div>
+
+    <!-- Màn hình câu hỏi quiz -->
+    <div class="container" id="quiz-container" style="display:none;">
+        <div id="quiz">
+            <div id="question" class="question"></div>
+            <div id="options" class="options"></div>
+        </div>
+    </div>
+
+    <script>
+        let language = 'vi'; // Mặc định là tiếng Việt
+        let currentQuestionIndex = 0;
+        let answers = { A: 0, B: 0, C: 0 };
+
+        const resultImages = {
+            vi: {
+                A: 'rs_v_1.jpg', // Hình ảnh cho kết quả A
+                B: 'rs_v_2.jpg', // Hình ảnh cho kết quả B
+                C: 'rs_v_3.jpg'  // Hình ảnh cho kết quả C
+            },
+            en: {
+                A: 'rs_e_1.jpg', // Hình ảnh cho kết quả A (English)
+                B: 'rs_e_2.jpg', // Hình ảnh cho kết quả B (English)
+                C: 'rs_e_3.jpg'  // Hình ảnh cho kết quả C (English)
+            }
+        };
+
+        // Bộ câu hỏi Tiếng Việt
+        const quizDataVi = [
+            {
+                question: "Câu 1: Khi bạn chọn trang phục cho một ngày đặc biệt, bạn sẽ chọn?",
+                options: [
+                    { text: "A: Áo trắng phối nhẹ nhàng", class: "option-a", value: 'A' },
+                    { text: "B: Có thêm chút họa tiết điểm nhấn", class: "option-b", value: 'B' },
+                    { text: "C: Phải có 1 món màu bao nổi", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Câu 2: Bạn thường cảm thấy thoải mái và thư giãn nhất khi?",
+                options: [
+                    { text: "A: Đọc sách và nghe nhạc thư giãn", class: "option-a", value: 'A' },
+                    { text: "B: Đi du lịch", class: "option-b", value: 'B' },
+                    { text: "C: Dành thời gian cho bạn bè", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Câu 3: Khi làm việc, bạn thích môi trường như thế nào?",
+                options: [
+                    { text: "A: Không gian đơn giản, yên tĩnh", class: "option-a", value: 'A' },
+                    { text: "B: Không gian hiện đại, đa phong cách", class: "option-b", value: 'B' },
+                    { text: "C: Không gian sắc màu, sáng tạo", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Câu 4: Về phong cách sống, bạn mong muốn?",
+                options: [
+                    { text: "A: Sự tối giản", class: "option-a", value: 'A' },
+                    { text: "B: Gần gũi với thiên nhiên", class: "option-b", value: 'B' },
+                    { text: "C: Đa sắc, đa dạng", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Câu 5: Gam màu yêu thích của bạn?",
+                options: [
+                    { text: "A: Màu trắng", class: "option-a", value: 'A' },
+                    { text: "B: Màu lạnh", class: "option-b", value: 'B' },
+                    { text: "C: Màu nóng", class: "option-c", value: 'C' }
+                ]
+            }
+        ];
+
+        // Bộ câu hỏi English
+        const quizDataEn = [
+            {
+                question: "Question 1: When choosing an outfit for a special day, you would pick?",
+                options: [
+                    { text: "A: A simple white outfit", class: "option-a", value: 'A' },
+                    { text: "B: Add some patterns for highlights", class: "option-b", value: 'B' },
+                    { text: "C: It must include something really bold", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Question 2: You feel most comfortable and relaxed when?",
+                options: [
+                    { text: "A: Reading a book and listening to relaxing music", class: "option-a", value: 'A' },
+                    { text: "B: Traveling", class: "option-b", value: 'B' },
+                    { text: "C: Spending time with friends", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Question 3: What kind of environment do you prefer for work?",
+                options: [
+                    { text: "A: Simple, quiet space", class: "option-a", value: 'A' },
+                    { text: "B: Modern, stylish space", class: "option-b", value: 'B' },
+                    { text: "C: Colorful, creative space", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Question 4: What kind of lifestyle do you wish for?",
+                options: [
+                    { text: "A: Simplicity", class: "option-a", value: 'A' },
+                    { text: "B: Close to nature", class: "option-b", value: 'B' },
+                    { text: "C: Diverse and colorful", class: "option-c", value: 'C' }
+                ]
+            },
+            {
+                question: "Question 5: What color palette do you prefer?",
+                options: [
+                    { text: "A: White", class: "option-a", value: 'A' },
+                    { text: "B: Cool tones", class: "option-b", value: 'B' },
+                    { text: "C: Warm tones", class: "option-c", value: 'C' }
+                ]
+            }
+        ];
+
+        // Hàm chọn ngôn ngữ
+        function setLanguage(selectedLanguage) {
+            language = selectedLanguage;
+            document.getElementById("language-container").style.display = "none"; // Ẩn màn hình chọn ngôn ngữ
+            document.getElementById("quiz-container").style.display = "block";   // Hiển thị màn hình quiz
+            loadQuiz(); // Tải câu hỏi đầu tiên
+        }
+
+        // Hàm tải lại quiz khi chưa có kết quả trong localStorage
+        function loadQuiz() {
+            let quizData = language === 'vi' ? quizDataVi : quizDataEn;
+            const currentQuiz = quizData[currentQuestionIndex];
+            document.getElementById("question").innerText = currentQuiz.question;
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+
+            currentQuiz.options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option.text;
+                button.classList.add(option.class);
+                button.addEventListener("click", () => {
+                    countAnswer(option.value); // Đếm câu trả lời
+                    nextQuestion();
+                });
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function countAnswer(answer) {
+            answers[answer]++; // Cộng dồn vào câu trả lời A, B, hoặc C
+        }
+
+        function nextQuestion() {
+            let quizData = language === 'vi' ? quizDataVi : quizDataEn;
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuiz();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const majority = getMajorityAnswer(); // Tính toán đa số câu trả lời
+            let imageUrl = resultImages[language][majority];
+
+            // Lưu kết quả vào localStorage
+            localStorage.setItem('quizResult', JSON.stringify({ language, imageUrl }));
+
+            // Thay đổi nền của trang thành hình ảnh kết quả full màn hình
+            document.body.innerHTML = `
+                <div class="full-screen-result" style="background-image: url('${imageUrl}')">
+                    <button onclick="restartQuiz()">${language === 'vi' ? 'Chơi lại' : 'Play Again'}</button>
+                </div>
+            `;
+        }
+
+        function getMajorityAnswer() {
+            const max = Math.max(answers.A, answers.B, answers.C);
+            if (max === answers.A) {
+                return 'A';
+            } else if (max === answers.B) {
+                return 'B';
+            } else {
+                return 'C';
+            }
+        }
+
+        // Kiểm tra nếu đã chơi quiz trước đó
+        function checkPreviousResult() {
+            const savedResult = localStorage.getItem('quizResult');
+            if (savedResult) {
+                const { language, imageUrl } = JSON.parse(savedResult);
+
+                // Hiển thị kết quả từ localStorage
+                document.body.innerHTML = `
+                    <div class="full-screen-result" style="background-image: url('${imageUrl}')">
+                        <button onclick="restartQuiz()">${language === 'vi' ? 'Chơi lại' : 'Play Again'}</button>
+                    </div>
+                `;
+            }
+        }
+
+        function restartQuiz() {
+            localStorage.removeItem('quizResult'); // Xóa kết quả đã lưu để chơi lại
+            document.location.reload(); // Reload lại trang để chơi lại
+        }
+
+        // Kiểm tra xem đã có kết quả trước đó hay chưa khi mở trang
+        checkPreviousResult();
+    </script>
+</body>
+</html>
