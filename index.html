@@ -355,7 +355,7 @@
 
         // Kiểm tra nếu đã chơi quiz trước đó
         function checkPreviousResult() {
-            // const savedResult = localStorage.getItem('quizResult');
+            const savedResult = localStorage.getItem('quizResult');
             if (savedResult) {
                 const { language, imageUrl } = JSON.parse(savedResult);
 
