@@ -32,11 +32,13 @@
             max-width: 400px;
             width: 100%;
             text-align: center;
+            font-weight: bold; /* Chữ in đậm */
+            color: #ff6cfd; /* Màu chữ hồng */
+            font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif; /* Áp dụng font đã tải */
         }
-
         .question {
-            font-size: 18px;
-            margin-bottom: 20px;
+            font-size: 20px;
+            margin-bottom: 10px;
             font-weight: bold;
             color: #000;
         }
@@ -47,14 +49,16 @@
             padding: 10px;
             margin: 10px 0;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 15px;
+            font-size: 20px;
             color: white;
+            font-weight: bold; /* Chữ in đậm */
+            font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif; /* Áp dụng font đã tải */
         }
 
-        .option-a { background-color: #4CAF50; }
-        .option-b { background-color: #FF5733; }
-        .option-c { background-color: #FFC300; }
+        .option-a { background-color: #41c581; }
+        .option-b { background-color: #fe5353; }
+        .option-c { background-color: #fdba4e; }
 
         /* Màn hình chọn ngôn ngữ */
         .language-selection button {
@@ -62,14 +66,52 @@
             width: 100%;
             padding: 15px;
             margin: 10px 0;
-            font-size: 18px;
+            font-size: 35px;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 20px;
         }
 
-        .btn-vietnamese { background-color: #28a745; }
-        .btn-english { background-color: #ffc107; }
+        .btn-vietnamese { background-color: #41c581; }
+        .btn-english { background-color: #fdba4e; }
+
+          /* CSS cho nút bắt đầu */
+        .start-button {
+            position: absolute;
+            bottom: 20%; /* Đặt ở dưới cùng của màn hình */
+            left: 50%;
+            transform: translateX(-50%); /* Căn giữa theo chiều ngang */
+            padding: 15px 30px;
+            font-size: 20px;
+            color: white;
+            background-color: #ff6cfd;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Căn chỉnh hình ảnh và nút để full màn hình */
+        .instructions {
+            display: none;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Để hình ảnh hướng dẫn full màn hình */
+        .instructions img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Để hình ảnh hướng dẫn full màn hình */
+        .instructions img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         /* CSS cho hình ảnh kết quả full màn hình */
         .full-screen-result {
@@ -101,12 +143,19 @@
 <body>
     <!-- Màn hình chọn ngôn ngữ -->
     <div class="container" id="language-container">
-        <h1>Life in Colour</h1>
         <h2>NGÔN NGỮ BẠN MUỐN SỬ DỤNG?<br>What is your language?</h2>
         <div class="language-selection">
             <button class="btn-vietnamese" onclick="setLanguage('vi')">Tiếng Việt</button>
             <button class="btn-english" onclick="setLanguage('en')">English</button>
         </div>
+    </div>
+
+     <!-- Màn hình hướng dẫn -->
+     <div class="container instructions" id="instructions-container">
+        <img id="instructions-image" src="" alt="Instructions" style="width: 100%; height: 100%;">
+        <button class="start-button" onclick="startQuiz()">
+            Bắt đầu <!-- Sẽ thay đổi theo ngôn ngữ -->
+        </button>
     </div>
 
     <!-- Màn hình câu hỏi quiz -->
@@ -134,7 +183,10 @@
                 C: 'rs_e_3.jpg'  // Hình ảnh cho kết quả C (English)
             }
         };
-
+        const instructionImages = {
+            vi: 'tur_v.jpg', // Hình ảnh hướng dẫn Tiếng Việt
+            en: 'tur_e.jpg'  // Hình ảnh hướng dẫn Tiếng Anh
+        };
         // Bộ câu hỏi Tiếng Việt
         const quizDataVi = [
             {
@@ -227,6 +279,16 @@
         function setLanguage(selectedLanguage) {
             language = selectedLanguage;
             document.getElementById("language-container").style.display = "none"; // Ẩn màn hình chọn ngôn ngữ
+            document.getElementById("instructions-container").style.display = "block";   // Hiển thị màn hình hướng dẫn
+
+            // Thay đổi hình ảnh và nút "Bắt đầu" dựa trên ngôn ngữ đã chọn
+            document.getElementById("instructions-image").src = instructionImages[language];
+            document.querySelector(".start-button").innerText = language === 'vi' ? 'Bắt đầu' : 'Start';
+        }
+
+        // Hàm bắt đầu quiz
+        function startQuiz() {
+            document.getElementById("instructions-container").style.display = "none"; // Ẩn màn hình hướng dẫn
             document.getElementById("quiz-container").style.display = "block";   // Hiển thị màn hình quiz
             loadQuiz(); // Tải câu hỏi đầu tiên
         }
