@@ -231,7 +231,7 @@
         let language = 'vi'; // Mặc định là tiếng Việt
         let currentQuestionIndex = 0;
         let answers = { A: 0, B: 0, C: 0 };
-        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxKrsUHrG0qSncC9GQNeH0rzzL3zxzoCD9q3JT2ep1pYkN5i0moHC0pCTLr3B_AzjZj4w/exec"; // Thay bằng URL của Google Apps Script của bạn
+        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbywhIHNy7jykTxJf1Mu4NCRM301WTyoc3oTmd8szIBcTGZwGVKLTsR6cBs1fJxq-6Fz/exec"; // Thay bằng URL của Google Apps Script của bạn
         const resultImages = {
             vi: {
                 A: 'rs_v_1.jpg', // Hình ảnh cho kết quả A
@@ -346,13 +346,10 @@
 
     const formData = new FormData();
     formData.append('email', email);
-
     fetch(GOOGLE_SHEET_API_URL, {
-        method: 'POST',
-        body: formData, // Sử dụng FormData để gửi dữ liệu
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', // Không cần JSON
-        }
+        method: "POST",
+        body: formData,
+        redirect: "follow"
     })
     .then(response => response.json()) // Chuyển đổi phản hồi thành JSON
     .then(data => {
