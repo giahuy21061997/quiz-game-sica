@@ -23,6 +23,45 @@
             align-items: center;
             height: 100vh;
         }
+         /* Màn hình nhập email */
+         #email-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            font-family: 'LC-ORCHARD-BOLD', Arial, sans-serif; /* Áp dụng font đã tải */
+        }
+
+        #email-container input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        #email-container button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #email-container button:hover {
+            background-color: #45a049;
+        }
 
         .container {
             background: transparent;
@@ -155,6 +194,13 @@
     </style>
 </head>
 <body>
+     <!-- Màn hình nhập email -->
+     <div id="email-container">
+        <h2>Nhập email của bạn để bắt đầu</h2>
+        <input type="email" id="user-email" placeholder="Nhập email của bạn" required>
+        <button onclick="submitEmail()">Bắt đầu</button>
+    </div>
+
     <!-- Màn hình chọn ngôn ngữ -->
     <div class="container" id="language-container">
         <h2 class="language-title">NGÔN NGỮ BẠN<br> MUỐN SỬ DỤNG?</h2>
@@ -185,7 +231,7 @@
         let language = 'vi'; // Mặc định là tiếng Việt
         let currentQuestionIndex = 0;
         let answers = { A: 0, B: 0, C: 0 };
-
+        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyGV5SEOEOFBRoBqFLeBn-VSM6ezLKerFd2f2JT2V1B6ZdYvWSmKcJHT5fOuoVx2Iy2/exec"; // Thay bằng URL của Google Apps Script của bạn
         const resultImages = {
             vi: {
                 A: 'rs_v_1.jpg', // Hình ảnh cho kết quả A
@@ -289,6 +335,36 @@
                 ]
             }
         ];
+            
+                function submitEmail() {
+            const email = document.getElementById('user-email').value;
+
+            if (!email) {
+                alert('Vui lòng nhập email!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('email', email);
+
+            fetch(GOOGLE_SHEET_API_URL, {
+                method: 'POST',
+                body: formData, // Sử dụng FormData thay vì JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Ẩn màn hình nhập email và hiển thị màn hình chọn ngôn ngữ
+                    document.getElementById('email-container').style.display = 'none';
+                    document.getElementById('language-container').style.display = 'block';
+                } else {
+                    alert('Có lỗi xảy ra khi gửi email!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
 
         // Hàm chọn ngôn ngữ
         function setLanguage(selectedLanguage) {
