@@ -231,7 +231,7 @@
         let language = 'vi'; // Mặc định là tiếng Việt
         let currentQuestionIndex = 0;
         let answers = { A: 0, B: 0, C: 0 };
-        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyGV5SEOEOFBRoBqFLeBn-VSM6ezLKerFd2f2JT2V1B6ZdYvWSmKcJHT5fOuoVx2Iy2/exec"; // Thay bằng URL của Google Apps Script của bạn
+        const GOOGLE_SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxKrsUHrG0qSncC9GQNeH0rzzL3zxzoCD9q3JT2ep1pYkN5i0moHC0pCTLr3B_AzjZj4w/exec"; // Thay bằng URL của Google Apps Script của bạn
         const resultImages = {
             vi: {
                 A: 'rs_v_1.jpg', // Hình ảnh cho kết quả A
@@ -336,36 +336,38 @@
             }
         ];
             
-                function submitEmail() {
-            const email = document.getElementById('user-email').value;
+        function submitEmail() {
+    const email = document.getElementById('user-email').value;
 
-            if (!email) {
-                alert('Vui lòng nhập email!');
-                return;
-            }
+    if (!email) {
+        alert('Vui lòng nhập email!');
+        return;
+    }
 
-            const formData = new FormData();
-            formData.append('email', email);
+    const formData = new FormData();
+    formData.append('email', email);
 
-            fetch(GOOGLE_SHEET_API_URL, {
-                method: 'POST',
-                body: formData, // Sử dụng FormData thay vì JSON
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // Ẩn màn hình nhập email và hiển thị màn hình chọn ngôn ngữ
-                    document.getElementById('email-container').style.display = 'none';
-                    document.getElementById('language-container').style.display = 'block';
-                } else {
-                    alert('Có lỗi xảy ra khi gửi email!');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+    fetch(GOOGLE_SHEET_API_URL, {
+        method: 'POST',
+        body: formData, // Sử dụng FormData để gửi dữ liệu
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', // Không cần JSON
         }
-
+    })
+    .then(response => response.json()) // Chuyển đổi phản hồi thành JSON
+    .then(data => {
+        if (data.status === 'success') {
+            // Ẩn màn hình nhập email và hiển thị màn hình chọn ngôn ngữ
+            document.getElementById('email-container').style.display = 'none';
+            document.getElementById('language-container').style.display = 'block';
+        } else {
+            alert('Có lỗi xảy ra khi gửi email!');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
         // Hàm chọn ngôn ngữ
         function setLanguage(selectedLanguage) {
             language = selectedLanguage;
